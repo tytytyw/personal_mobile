@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        /* header styles */
+        p,
+        span,
+        svg,
+        path {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        body {
+            font-family: "Roboto", "Arial", sans-serif;
+            font-weight: 600;
+        }
+
+        .header__wrapper {
+            height: 56px;
+            min-height: 56px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            padding: 0 12px;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            font-size: 18px;
+            line-height: 1;
+            color: #001053;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background: #fff;
+        }
+
+        /* table styles */
+
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* Remove default margin */
+        body,
+        h1,
+        p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        body {
+            scrollbar-width: 0;
+            height: 100vh;
+            background: #F7F9FB;
+            overflow-x: hidden;
+        }
+
+        /* Set core root defaults */
+        html:focus-within {
+            scroll-behavior: smooth;
+        }
+
+        html {
+            font-size: 13px;
+        }
+
+        .button {
+            border: none;
+            outline: none;
+            color: inherit;
+            background: inherit;
+            cursor: pointer;
+            pointer-events: all;
+        }
+
+        .button svg path {
+            transition: fill .2s ease, opacity .3s ease;
+        }
+
+        .table .table__wrapper {
+            background: #F7F9FB;
+            display: flex;
+            flex-direction: column;
+            text-rendering: optimizeSpeed;
+            line-height: 1.5;
+            letter-spacing: 0.1px;
+            color: #001053;
+            font-family: 'Roboto', "Arial", sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .table__wrapper {
+            height: 100%;
+        }
+
+        .table {
+            height: calc(100% - 46px);
+        }
+
+        .table div {
+            pointer-events: none;
+        }
+
+        .table .table__wrapper .table__row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable {
+            cursor: pointer;
+            -webkit-transition: background .1s ease;
+            transition: background .1s ease;
+            background: #fff;
+            color: #001053;
+            font-weight: 600;
+            font-size: .77rem;
+            height: 39px;
+            user-select: none;
+            pointer-events: all;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable:not(:last-child) {
+            margin-bottom: 4px;
+        }
+
+        .table .table__wrapper .table__row .table__col {
+            width: 5%;
+            -ms-grid-column-align: stretch;
+            justify-self: stretch;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_text-start {
+            text-align: start;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red svg path {
+            fill: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red .circle {
+            background: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green svg path {
+            fill: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green .circle {
+            background: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow svg path {
+            fill: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow .circle {
+            background: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .svg {
+            width: 100%;
+            margin: auto;
+            display: block;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+            -ms-flex-preferred-size: 1.7rem;
+            flex-basis: 1.7rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_mini {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            min-width: 95px;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_medium {
+            -webkit-box-flex: 2;
+            -ms-flex-positive: 2;
+            flex-grow: 2;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-large {
+            -webkit-box-flex: 6;
+            -ms-flex-positive: 6;
+            flex-grow: 6;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_large {
+            -webkit-box-flex: 4;
+            -ms-flex-positive: 4;
+            flex-grow: 4;
+        }
+
+        .table .table__wrapper .table__head {
+            color: #A6BCCC;
+            cursor: default;
+            padding-right: 5px;
+        }
+
+        .table .table__wrapper .table__head .table__col {
+            padding: 17px 0 3px 0;
+        }
+
+        div.scroll-container {
+            min-height: 39px;
+            height: calc(100% - 40px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scrollbar-width: 5px;
+            scrollbar-color: #1976d2;
+            pointer-events: all;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            background-color: #F7F9FB;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 5px;
+            background-color: #F7F9FB;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #1976d2;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 350px) {
+
+            html {
+                font-size: 11px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+        @media (max-width: 280px) {
+            html {
+                font-size: 9px;
+            }
+        }
+
+
+        @media (max-width: 230px) {
+            html {
+                font-size: 9px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+
+        .header__wrapper .burger {
+            width: 18px;
+            height: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .header__wrapper .burger .burger__line {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+
+        .header__wrapper .burger::after,
+        .header__wrapper .burger::before {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            width: 100%;
+            content: "";
+            top: 0;
+        }
+
+        .header__wrapper .burger::after {
+            bottom: 0;
+            top: auto;
+        }
+
+        .header__wrapper .title {
+            font-size: 1.15rem;
+        }
+
+        .comment {
+            color: #A6BCCC;
+            white-space: break-spaces;
+        }
+
+        p.comment::after {
+            content: '...';
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .buttons-wrapper a {
+            margin: 0 .5rem;
+        }
+    </style>
+</head>
+
+<body style="margin: 0">
+
+    <!-- header -->
+    <div class="header__wrapper">
+        <div class="burger">
+            <a href="menu" id="menu" class="menu">
+
+                <div class="burger__line"></div>
+            </a>
+
+        </div>
+        <h1 class="title">Планируемые</h1>
+        <div class="buttons-wrapper">
+            <a href="refresh" id="refresh" class="refresh-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M21.2858 4.60264C20.8537 4.56568 20.4716 4.86434 20.4322 5.26969L20.3282 6.34087C18.5624 3.73907 15.4971 2 11.9455 2C8.12474 2 4.75761 4.04596 3.08612 7.11669C2.8888 7.47918 3.04205 7.92311 3.42841 8.10824C3.81484 8.29337 4.28791 8.14962 4.48523 7.7871C5.89982 5.18832 8.7405 3.47398 11.9455 3.47398C14.8667 3.47398 17.5029 4.90119 19.0133 7.13711L17.8932 6.3866C17.5402 6.15006 17.0496 6.22678 16.7975 6.55798C16.5454 6.88922 16.6271 7.34947 16.9802 7.58605L20.3765 9.8619C20.8743 10.1948 21.5609 9.89006 21.6153 9.3291L21.9967 5.40353C22.0361 4.99814 21.7178 4.6396 21.2858 4.60264Z"
+                        fill="#001053" />
+                    <path
+                        d="M20.5716 15.8914C20.1852 15.7062 19.7121 15.85 19.5148 16.2125C18.1002 18.8114 15.2595 20.5259 12.0545 20.5259C9.1333 20.5259 6.49705 19.0986 4.98674 16.8625L6.10676 17.6131C6.45981 17.8496 6.95036 17.7729 7.20251 17.4417C7.45462 17.1104 7.37285 16.6502 7.01984 16.4136L3.62349 14.1376C3.1318 13.808 2.43969 14.1036 2.3847 14.6704L2.0033 18.5962C1.9639 19.0016 2.28223 19.3602 2.71422 19.3971C3.1468 19.434 3.52844 19.135 3.5678 18.73L3.67188 17.6588C5.43763 20.2608 8.50285 21.9999 12.0545 21.9999C15.8753 21.9999 19.2424 19.9539 20.9139 16.883C21.1112 16.5204 20.9579 16.0765 20.5716 15.8914Z"
+                        fill="#001053" />
+                </svg>
+
+            </a>
+            <a href="search" id="search" class="search-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                        fill="#F7F9FB" stroke="#001053" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M21 21L16.65 16.65" stroke="#001053" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- table -->
+
+    <div class="table">
+        <div class="table__wrapper">
+
+            <!-- Шапка таблицы -->
+            <div class="table__head">
+                <!-- Ряд таблицы -->
+                <div class="table__row">
+                    <!-- Колонка таблицы и ее размер
+                (table__col_extra-mini table__col_mini table__col_medium table__col_large table__col_extra-large) -->
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_text-start table__col_large table__col_text-start">
+                        Кандидат/Вакансия</div>
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_mini table__col_text-start">Действие/Срок</div>
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_large table__col_text-start">Комментарий</div>
+                    <div class="table__col table__col_extra-mini"></div>
+                </div>
+            </div>
+
+            <div class="scroll-container">
+
+                <!-- Колонка таблицы и ее размер -->
+                <div class="table__row table__row_selectable">
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_text-start table__col_large table__col_text-star">
+                        <p>Воронов А.Ф.</p>
+                        <p>Программист 1С</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_mini table__col_text-start">
+                        <p>Принять на работу</p>
+                        <p>09.12.2021</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini"></div>
+                    <div class="table__col table__col_large comment table__col_text-start">
+                        <p class="comment">Какой-то текст комментария</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini">
+                        <button class="button">
+                            <svg width="7" height="11" viewBox="0 0 7 11" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M0.310934 9.31437L4.43546 5.49513L0.310934 1.67589C-0.103645 1.292 -0.103645 0.671866 0.310934 0.287974C0.725513 -0.0959187 1.39522 -0.0959187 1.8098 0.287974L6.68907 4.80609C7.10365 5.18999 7.10365 5.81012 6.68907 6.19401L1.8098 10.7121C1.39522 11.096 0.725513 11.096 0.310934 10.7121C-0.0930144 10.3282 -0.103645 9.69826 0.310934 9.31437Z"
+                                    fill="#A6BCCC" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
