@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<style>
+    html {
+        font-style: 14px;
+    }
+
+    body {
+        font-family: "Roboto", "Arial", sans-serif;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    a {
+        color: inherit;
+        font-weight: inherit;
+        font-family: inherit;
+    }
+
+    .menu_additional-list {
+        display: flex;
+        flex-direction: column;
+        background: #A6BCCC;
+    }
+
+    .menu_additional-list.active {
+        transform: translateX(0);
+        pointer-events: all;
+        border: 1px solid #A6BCCC;
+    }
+
+    .menu_additional-list .group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu_additional-list .group:not(:last-child) {
+        margin-bottom: 6px;
+    }
+
+    .menu_additional-list .group a {
+        background: #fff;
+        color: #001053;
+        text-decoration: none;
+        font: inherit;
+        padding: 1.2rem;
+        display: flex;
+        align-items: center;
+        pointer-events: all;
+    }
+
+    .menu_additional-list .group a:not(:last-child) {
+        margin-bottom: 1px;
+    }
+
+    .menu_additional-list .group a span {
+        margin-left: 1rem;
+    }
+
+    .group:last-child {
+        padding-bottom: 1px;
+    }
+</style>
+
+<body>
+    <div class="menu_additional-list" id="menu_additional-list">
+        <div class="group">
+            <a href="#" id="begin">
+                <span>Начало</span>
+            </a>
+            <a href="#" id="search">
+                <span>Поиск</span>
+            </a>
+        </div>
+        <div class="group">
+            <a href="#" id="new-events">
+                <span>Новые события</span>
+            </a>
+            <a href="./planning.html" id="planning">
+                <span>Планируемые</span>
+            </a>
+            <a href="#" id="on-control">
+                <span>На контроле</span>
+            </a>
+            <a href="#" id="expired">
+                <span>Просрочены</span>
+            </a>
+
+        </div>
+
+        <div class="group">
+            <a href="./candidates.html" id="candidates">
+                <span>Кандидаты</span>
+            </a>
+            <a href="./vacancies.html" id="vacancies">
+                <span>Вакансии</span>
+            </a>
+        </div>
+
+        <div class="group">
+            <a href="#" id="activites">
+                <span>Активности</span>
+            </a>
+            <a href="#" id="refresh">
+                <span>Обновить данные</span>
+            </a>
+        </div>
+
+        <div class="group">
+            <a href="#" id="about">
+                <span>О программе</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
