@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        /* header styles */
+        p,
+        span,
+        svg,
+        path {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        body {
+            font-family: "Roboto", "Arial", sans-serif;
+            font-weight: 600;
+        }
+
+        .header__wrapper {
+            height: 56px;
+            min-height: 56px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            padding: 0 12px;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            font-size: 18px;
+            line-height: 1;
+            color: #001053;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background: #fff;
+        }
+
+        /* table styles */
+
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* Remove default margin */
+        body,
+        h1,
+        p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        body {
+            scrollbar-width: 0;
+            height: 100vh;
+            background: #F7F9FB;
+            overflow-x: hidden;
+        }
+
+        /* Set core root defaults */
+        html:focus-within {
+            scroll-behavior: smooth;
+        }
+
+        html {
+            font-size: 13px;
+        }
+
+        .button {
+            border: none;
+            outline: none;
+            color: inherit;
+            background: inherit;
+            cursor: pointer;
+            pointer-events: all;
+        }
+
+        .button svg path {
+            transition: fill .2s ease, opacity .3s ease;
+        }
+
+        .table .table__wrapper {
+            background: #F7F9FB;
+            display: flex;
+            flex-direction: column;
+            text-rendering: optimizeSpeed;
+            line-height: 1.5;
+            letter-spacing: 0.1px;
+            color: #001053;
+            font-family: 'Roboto', "Arial", sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .table__wrapper {
+            height: 100%;
+        }
+
+        .table {
+            height: calc(100% - 56px);
+        }
+
+        .table div {
+            pointer-events: none;
+        }
+
+        .table .table__wrapper .table__row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .row-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable {
+            cursor: pointer;
+            -webkit-transition: background .1s ease;
+            transition: background .1s ease;
+            background: #fff;
+            color: #001053;
+            font-weight: 600;
+            font-size: .77rem;
+            height: 43px;
+            user-select: none;
+            pointer-events: all;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable:not(:last-child) {
+            margin-bottom: 2px;
+        }
+
+        .table .table__wrapper .table__row .table__col {
+            width: 5%;
+            -ms-grid-column-align: stretch;
+            justify-self: stretch;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_text-start {
+            text-align: start;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red svg path {
+            fill: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red .circle {
+            background: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green svg path {
+            fill: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green .circle {
+            background: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow svg path {
+            fill: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow .circle {
+            background: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .svg {
+            width: 100%;
+            margin: auto;
+            display: block;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+            -ms-flex-preferred-size: 1.7rem;
+            flex-basis: 1.7rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_mini {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            min-width: 95px;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_medium {
+            -webkit-box-flex: 2;
+            -ms-flex-positive: 2;
+            flex-grow: 2;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-large {
+            -webkit-box-flex: 6;
+            -ms-flex-positive: 6;
+            flex-grow: 6;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_large {
+            -webkit-box-flex: 4;
+            -ms-flex-positive: 4;
+            flex-grow: 4;
+        }
+
+        .table .table__wrapper .table__head {
+            color: #A6BCCC;
+            cursor: default;
+            padding-right: 5px;
+            background: inherit;
+        }
+
+        .table .table__wrapper .table__head .table__col {
+            padding: 17px 0 3px 0;
+        }
+
+        div.scroll-container {
+            min-height: 43px;
+            height: calc(100% - 40px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scrollbar-width: 5px;
+            scrollbar-color: #1976d2;
+            pointer-events: all;
+            background: inherit;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            background-color: #F7F9FB;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 5px;
+            background-color: #F7F9FB;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #1976d2;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 350px) {
+
+            html {
+                font-size: 11px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+        @media (max-width: 280px) {
+            html {
+                font-size: 9px;
+            }
+        }
+
+
+        @media (max-width: 230px) {
+            html {
+                font-size: 9px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+
+        .header__wrapper .burger {
+            width: 18px;
+            height: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .header__wrapper .burger .burger__line {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+
+        .header__wrapper .burger::after,
+        .header__wrapper .burger::before {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            width: 100%;
+            content: "";
+            top: 0;
+        }
+
+        .header__wrapper .burger::after {
+            bottom: 0;
+            top: auto;
+        }
+
+        .header__wrapper .title {
+            font-size: 1.15rem;
+            flex-grow: 1;
+            padding: 0 1.5rem;
+        }
+
+        .comment {
+            color: #A6BCCC;
+            white-space: break-spaces;
+        }
+
+        p.comment {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 100%
+        }
+
+        .table__col.comment {
+            display: flex;
+            align-items: center;
+        }
+
+        .table__col p {
+            text-overflow: ellipsis;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .buttons-wrapper a {
+            margin: 0 .5rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-mini.padding {
+            flex-basis: 1em;
+        }
+    </style>
+</head>
+
+<body style="margin: 0">
+
+    <!-- header -->
+    <div class="header__wrapper">
+        <div class="burger">
+            <a href="main-menu.html" id="menu" class="menu">
+
+                <div class="burger__line"></div>
+            </a>
+
+        </div>
+        <h1 class="title">Активности</h1>
+        <div class="buttons-wrapper">
+            <a href="add" id="add" class="refresh-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                        stroke="#1A2864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M13.0244 11.1333L15.8076 11.1333V12.7593L13.0244 12.7593L13.0244 15.9307H11.2959V12.7593H8.49805V11.1333H11.2959V8.16699H13.0244V11.1333Z"
+                        fill="#001053" />
+                </svg>
+
+            </a>
+            <a href="search" id="search" class="search-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                        fill="#F7F9FB" stroke="#001053" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M21 21L16.65 16.65" stroke="#001053" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- table -->
+
+    <div class="table">
+        <div class="table__wrapper">
+
+            <!-- Шапка таблицы -->
+            <div class="table__head">
+                <!-- Ряд таблицы -->
+                <div class="table__row">
+                    <!-- Колонка таблицы и ее размер
+                (table__col_extra-mini table__col_mini table__col_medium table__col_large table__col_extra-large) -->
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_text-start table__col_medium table__col_text-start">
+                        Дата/Номер</div>
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_medium table__col_text-start">Кандидат/Вакансия</div>
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_medium table__col_text-start">Действие</div>
+                    <div class="table__col table__col_extra-mini"></div>
+                </div>
+            </div>
+
+            <div class="scroll-container">
+
+                <!-- Колонка таблицы и ее размер -->
+                <div class="table__row table__row_selectable">
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_text-start table__col_medium table__col_text-start">
+                        <p>22.02.2021</p>
+                        <p class="comment">132</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_medium table__col_text-start">
+                        <p>Воронов А.Ф.</p>
+                        <p>Программист</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_medium table__col_text-start">
+                        <p>Пригласить<br>на собеседование</p>
+                    </div>
+                    <div class="table__col table__col_extra-mini">
+                        <button class="button">
+                            <svg width="7" height="11" viewBox="0 0 7 11" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M0.310934 9.31437L4.43546 5.49513L0.310934 1.67589C-0.103645 1.292 -0.103645 0.671866 0.310934 0.287974C0.725513 -0.0959187 1.39522 -0.0959187 1.8098 0.287974L6.68907 4.80609C7.10365 5.18999 7.10365 5.81012 6.68907 6.19401L1.8098 10.7121C1.39522 11.096 0.725513 11.096 0.310934 10.7121C-0.0930144 10.3282 -0.103645 9.69826 0.310934 9.31437Z"
+                                    fill="#A6BCCC" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <a class="row-link" href="activity_1" id="href=activity_1" target="_blank"></a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
