@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        /* header styles */
+        p,
+        span,
+        svg,
+        path {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        h2,
+        h5 {
+            margin: 0;
+        }
+
+        body {
+            font-family: "Roboto", "Arial", sans-serif;
+            font-weight: 600;
+        }
+
+        a {
+            color: inherit;
+            font-weight: inherit;
+            font-family: inherit;
+        }
+
+        .menu_additional-list {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+            z-index: 2;
+            background: #A6BCCC;
+            transform: translateX(100%);
+            transition: transform .4s ease;
+        }
+
+        .menu_additional-list.active {
+            transform: translateX(0);
+            pointer-events: all;
+            border: 1px solid #A6BCCC;
+        }
+
+        .menu_additional-list .group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu_additional-list .group:not(:last-child) {
+            margin-bottom: 6px;
+        }
+
+        .menu_additional-list .group a {
+            background: #fff;
+            color: #001053;
+            text-decoration: none;
+            font: inherit;
+            padding: .6rem;
+            display: flex;
+            align-items: center;
+            pointer-events: all;
+        }
+
+        #multi-select.active {
+            background: #001053;
+            color: #fff;
+        }
+
+        #multi-select.active svg path {
+            fill: #fff;
+        }
+
+        .menu_additional-list .group a:not(:last-child) {
+            margin-bottom: 1px;
+        }
+
+        .menu_additional-list .group a span {
+            margin-left: 1rem;
+        }
+
+        .header__wrapper {
+            height: 56px;
+            min-height: 56px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            padding: 0 1rem;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            font-size: 18px;
+            line-height: 1;
+            color: #001053;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background: #fff;
+        }
+
+        /* table styles */
+
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* Remove default margin */
+        body,
+        h1,
+        p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        body {
+            scrollbar-width: 0;
+            height: 100vh;
+            background: #F7F9FB;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* Set core root defaults */
+        html:focus-within {
+            scroll-behavior: smooth;
+        }
+
+        html {
+            font-size: 13px;
+        }
+
+        .button {
+            border: none;
+            outline: none;
+            color: inherit;
+            background: inherit;
+            cursor: pointer;
+            pointer-events: all;
+        }
+
+        .button svg path {
+            transition: fill .2s ease, opacity .3s ease;
+        }
+
+        .table .table__wrapper {
+            background: #F7F9FB;
+            display: flex;
+            flex-direction: column;
+            text-rendering: optimizeSpeed;
+            line-height: 1.5;
+            letter-spacing: 0.1px;
+            color: #001053;
+            font-family: 'Roboto', "Arial", sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .table {
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden
+        }
+
+        .table div {
+            pointer-events: none;
+        }
+
+        .table .table__wrapper .table__row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .table__row.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #0AA9FF;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable {
+            cursor: pointer;
+            -webkit-transition: background .1s ease;
+            transition: background .1s ease;
+            background: #fff;
+            color: #001053;
+            font-size: .77rem;
+            height: 43px;
+            user-select: none;
+            pointer-events: all;
+        }
+
+        .table .table__wrapper .table__row.table__row_selectable:not(:last-child) {
+            margin-bottom: 2px;
+        }
+
+        .table .table__wrapper .table__row .table__col {
+            width: 5%;
+            -ms-grid-column-align: stretch;
+            justify-self: stretch;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_text-start {
+            text-align: start;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_text-end {
+            text-align: end;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red svg path {
+            fill: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.red .circle {
+            background: #F58686;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green svg path {
+            fill: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.green .circle {
+            background: #6FCF97;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow svg path {
+            fill: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon.yellow .circle {
+            background: #FCE08C;
+        }
+
+        .table .table__wrapper .table__row .table__col .col__sign-icon .svg {
+            width: 100%;
+            margin: auto;
+            display: block;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+            -ms-flex-preferred-size: 1.7rem;
+            flex-basis: 1.7rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_mini {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            min-width: 95px;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_medium {
+            -webkit-box-flex: 2;
+            -ms-flex-positive: 2;
+            flex-grow: 2;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-large {
+            -webkit-box-flex: 6;
+            -ms-flex-positive: 6;
+            flex-grow: 6;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_large {
+            -webkit-box-flex: 4;
+            -ms-flex-positive: 4;
+            flex-grow: 4;
+        }
+
+        .table .table__wrapper .table__head {
+            color: #A6BCCC;
+            cursor: default;
+            padding-right: 5px;
+            background: inherit;
+        }
+
+        .table .table__wrapper .table__head .table__col {
+            padding: 17px 0 3px 0;
+        }
+
+        #toCall {
+            background: #36C496;
+            color: #fff;
+        }
+
+        @media (max-width: 350px) {
+
+            html {
+                font-size: 11px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+        @media (max-width: 280px) {
+            html {
+                font-size: 9px;
+            }
+        }
+
+
+        @media (max-width: 230px) {
+            html {
+                font-size: 9px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_mini {
+                min-width: 40px;
+            }
+
+            .table .table__wrapper .table__row .table__col.table__col_extra-mini {
+                flex-basis: 3em;
+            }
+        }
+
+
+        .header__wrapper .burger {
+            width: 18px;
+            height: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .header__wrapper .burger .burger__line {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+
+        .header__wrapper .burger::after,
+        .header__wrapper .burger::before {
+            height: 2px;
+            background: #001053;
+            border-radius: 2px;
+            position: absolute;
+            width: 100%;
+            content: "";
+            top: 0;
+        }
+
+        .header__wrapper .burger::after {
+            bottom: 0;
+            top: auto;
+        }
+
+        .header__wrapper .title {
+            font-size: 1.15rem;
+            flex-grow: 1;
+            padding: 0 1.5rem;
+        }
+
+        .comment {
+            color: #A6BCCC;
+            white-space: break-spaces;
+        }
+
+        p.comment {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 100%
+        }
+
+        .table__col.comment {
+            display: flex;
+            align-items: center;
+        }
+
+        .table__col p,
+        .table__col a {
+            text-overflow: ellipsis;
+            max-width: 100%;
+            overflow: hidden;
+            font-weight: 600;
+        }
+
+        .table__col a {
+            text-decoration: underline;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .header__wrapper .buttons-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .buttons-wrapper a {
+            margin: 0 .5rem;
+        }
+
+        .table .table__wrapper .table__row .table__col.table__col_extra-mini.padding {
+            flex-basis: 1em;
+        }
+
+        .table__row .table__group-title {
+            font-size: .9rem;
+            text-transform: uppercase;
+        }
+
+        .color_gray {
+            color: #A6BCCC;
+        }
+
+        .table__col .fw_regular {
+            font-weight: 400;
+        }
+
+        .table.hidden {
+            display: none;
+        }
+
+        /* user info */
+
+        .person-widget {
+            text-rendering: optimizeSpeed;
+            line-height: 1.15;
+            letter-spacing: 0.1px;
+            color: #001053;
+            font-family: 'Roboto', "Arial", sans-serif;
+            font-style: normal;
+            font-weight: 300;
+            padding: .5rem 1rem;
+            cursor: default;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        .person-widget .person-widget__wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__left-side {
+            margin-right: 20px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__left-side .person-widget__avatar-wrapper {
+            width: 64px;
+            height: 64px;
+            min-width: 64px;
+            max-width: 64px;
+            min-height: 64px;
+            max-height: 64px;
+            margin-bottom: 8px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__left-side .person-widget__avatar-wrapper .person-widget__avatar {
+            display: block;
+            border-radius: 50%;
+            -o-object-fit: cover;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: -moz-crisp-edges;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__left-side .person-widget__avatar-wrapper .person-widget__status {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            bottom: 2px;
+            right: 2px;
+            cursor: default;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__right-side .person-widget__person-info {
+            height: 64px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__right-side .person-widget__person-info .person-widget__name {
+            font-weight: 600;
+            font-size: 1.6rem;
+            text-overflow: ellipsis;
+            margin-bottom: .1rem;
+        }
+
+        .person-widget .person-widget__wrapper .person-widget__right-side {
+            align-self: flex-start;
+        }
+
+        .person-widget .person-widget__wrapper .subtitile__text {
+            color: #959BAE;
+            font-weight: 300;
+            font-size: 1rem;
+            text-overflow: ellipsis;
+        }
+
+        /* navigaton */
+        .nav {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: #A6BCCC;
+            padding-top: 1.5rem;
+            background: #fff;
+            font-weight: 400;
+            margin: 2px 0;
+        }
+
+        .nav .nav__link {
+            padding-bottom: .7rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin: 0 .5rem;
+        }
+
+        .nav .nav__link.active {
+            color: #1A2864;
+            position: relative;
+        }
+
+        .nav .nav__link.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            height: 2px;
+            background: #0AA9FF;
+            border-radius: 10px 10px 0px 0px;
+            left: 0;
+            right: 0;
+        }
+
+        /* chat (lent)*/
+
+
+        @media (max-width: 350px) {
+
+            html {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 290px) {
+
+            html {
+                font-size: 9px;
+            }
+        }
+
+        .chat {
+            font-family: "Roboto", "Arial", sans-serif;
+            height: 100vh;
+            font-weight: 400;
+        }
+
+        .chat__messages-list {
+            position: relative;
+            padding: 24px 11px 16px 16px;
+            z-index: 1
+        }
+
+        .chat-message_sent {
+            text-align: right
+        }
+
+        .chat-message_received {
+            text-align: left
+        }
+
+        .chat-message__source {
+            line-height: 140%;
+            color: #a6bccc
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__source {
+                font-size: 8px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__source {
+                font-size: 12px
+            }
+        }
+
+        .chat-message__bubble {
+            display: inline-block;
+            text-align: left;
+            border: 1px solid transparent;
+            background: #fff
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__bubble {
+                width: 70%;
+                padding: 10px;
+                border-radius: 8px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__bubble {
+                width: 60%;
+                max-width: 400px;
+                padding: 16px;
+                border-radius: 12px;
+                margin: 8px 0
+            }
+        }
+
+        .chat-message_sent .chat-message__bubble {
+            border-bottom-right-radius: 0;
+            border-color: #a6bccc
+        }
+
+        .chat-message_received .chat-message__bubble {
+            border-bottom-left-radius: 0;
+            border-color: #0aa9ff
+        }
+
+        .chat-message__subject {
+            line-height: 140%;
+            color: #a6bccc;
+            margin-bottom: 4px
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__subject {
+                font-size: 10px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__subject {
+                font-size: 12px
+            }
+        }
+
+        .chat-message__message {
+            font-style: normal;
+            font-weight: normal;
+            line-height: 140%;
+            color: #001053
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__message {
+                font-size: 12px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__message {
+                font-size: 14px
+            }
+        }
+
+        .chat-message__file {
+            display: block;
+            height: 16px;
+            line-height: 16px;
+            margin: 8px 0;
+            color: #a6bccc;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .chat-message__file::before {
+            content: "";
+            display: block;
+            float: left;
+            width: 16px;
+            height: 16px;
+            background: url(data:image/svg+xml;base64,CjxzdmcgaGVpZ2h0PSI1MTBwdCIgdmlld0JveD0iLTI1IDAgNTEwIDUxMC4yNTc0NyIgd2lkdGg9IjUxMHB0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00MjcuODI4MTI1IDMxNC40ODQzNzUtMzcuNzM4MjgxLTM3LjczODI4MS0xNjkuODE2NDA2LTE2OS44MDg1OTRjLTMxLjI5Njg3Ni0zMS4wNjI1LTgxLjgxNjQwNy0zMC45Njg3NS0xMTIuOTk2MDk0LjIxMDkzOC0zMS4xNzk2ODggMzEuMTc5Njg3LTMxLjI3MzQzOCA4MS42OTkyMTgtLjIxMDkzOCAxMTIuOTk2MDkzbDE2OS44MDg1OTQgMTY5Ljg1OTM3NWM2Ljk0NTMxMiA2Ljk0OTIxOSAxOC4yMTA5MzggNi45NDkyMTkgMjUuMTYwMTU2IDAgNi45NDUzMTMtNi45NDkyMTggNi45NDUzMTMtMTguMjEwOTM3IDAtMjUuMTYwMTU2bC0xNjkuODA4NTk0LTE2OS44NTkzNzVjLTE3LjM2NzE4Ny0xNy4zNjcxODctMTcuMzY3MTg3LTQ1LjUxOTUzMSAwLTYyLjg4NjcxOSAxNy4zNjcxODgtMTcuMzY3MTg3IDQ1LjUxOTUzMi0xNy4zNjcxODcgNjIuODg2NzE5IDBsMTY5Ljg1OTM3NSAxNjkuODA4NTk0IDM3LjczODI4MiAzNy43MzQzNzVjMzEuMjY1NjI0IDMxLjI3NzM0NCAzMS4yNTM5MDYgODEuOTc2NTYzLS4wMTk1MzIgMTEzLjIzODI4MS0zMS4yNzczNDQgMzEuMjYxNzE5LTgxLjk3MjY1NiAzMS4yNTM5MDYtMTEzLjIzODI4MS0uMDIzNDM3bC0zMS40NDE0MDYtMzEuNDUzMTI1LTE3Ni4xMDE1NjMtMTc2LjEwMTU2My0xMi41ODIwMzEtMTIuNTc4MTI1Yy00My45NzY1NjMtNDUuMzUxNTYyLTQzLjQxNzk2OS0xMTcuNjAxNTYyIDEuMjUtMTYyLjI3MzQzNyA0NC42NzE4NzUtNDQuNjY3OTY5IDExNi45MjE4NzUtNDUuMjI2NTYzIDE2Mi4yNzM0MzctMS4yNWwxODguNjc5Njg4IDE4OC42ODM1OTNjNC40OTYwOTQgNC40OTIxODggMTEuMDQ2ODc1IDYuMjQ2MDk0IDE3LjE4MzU5NCA0LjYwMTU2MyA2LjE0MDYyNS0xLjY0NDUzMSAxMC45Mzc1LTYuNDM3NSAxMi41ODIwMzEtMTIuNTc4MTI1cy0uMTEzMjgxLTEyLjY4NzUtNC42MDU0NjktMTcuMTgzNTk0bC0xODguNjc5Njg3LTE4OC42Nzk2ODdjLTU5LjA4OTg0NC01OC44MjAzMTMtMTU0LjY0MDYyNS01OC43MTA5MzgtMjEzLjU5Mzc1LjI0NjA5My01OC45NTcwMzEgNTguOTUzMTI2LTU5LjA2NjQwNyAxNTQuNTAzOTA3LS4yNDYwOTQgMjEzLjU5Mzc1bDE4OC42Nzk2ODcgMTg4LjY3OTY4OCAzMS40ODgyODIgMzEuNDUzMTI1YzQ1LjQxMDE1NiA0My42MTcxODcgMTE3LjM3NSA0Mi44OTA2MjUgMTYxLjg5MDYyNS0xLjY0MDYyNSA0NC41MTk1MzEtNDQuNTI3MzQ0IDQ1LjIyNjU2Mi0xMTYuNDkyMTg4IDEuNTk3NjU2LTE2MS44OTA2MjV6bTAgMCIgZmlsbD0iI0E2QkNDQyIvPjwvc3ZnPg==) center no-repeat;
+            background-size: 14px;
+            margin-right: 4px
+        }
+
+        .chat-message__file:hover {
+            opacity: .8
+        }
+
+        .chat-message__comment {
+            font-style: italic;
+            font-weight: normal;
+            line-height: 140%;
+            color: #a6bccc
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__comment {
+                font-size: 12px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__comment {
+                font-size: 14px
+            }
+        }
+
+        .chat-message__status {
+            font-style: normal;
+            font-weight: normal;
+            line-height: 140%;
+            color: #a6bccc
+        }
+
+        .chat-message__status::before {
+            content: "";
+            display: inline-block;
+            background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgOCA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNi42NjY1OCAxTDIuOTk5OTIgNC42NjY2N0wxLjMzMzI1IDMiIHN0cm9rZT0iIzM2QzQ5NiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=) center no-repeat
+        }
+
+        .chat__footer {
+            color: #A6BCCC;
+            pointer-events: all;
+            background: #fff;
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
+            padding: 1rem 0 2rem 0;
+            background: #F7F9FB;
+        }
+
+        .chat__footer .buttons-wrapper {
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            pointer-events: all;
+            margin: 8px 4px;
+            margin-bottom: 0;
+            padding-bottom: 8px;
+            padding-right: 8px;
+            background: #F7F9FB;
+        }
+
+        .chat__footer .buttons-wrapper .button {
+            border: 1px solid #A6BCCC;
+            border-radius: 8px;
+            width: 92px;
+            line-height: 31px;
+            text-align: center;
+            margin-left: 8px;
+            display: inline-block;
+            pointer-events: all;
+        }
+
+        .chat__footer .buttons-wrapper .button.active {
+            border-color: #36C496;
+            color: #36C496;
+        }
+
+        .chat__footer .send-message {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        #message_text {
+            pointer-events: all;
+            resize: none;
+            width: 80%;
+            outline: none;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 1.2rem 2rem 1.4rem 0.9rem;
+            font-style: italic;
+        }
+
+        #send-message {
+            padding: 1rem 2rem 1rem 1rem;
+        }
+
+        @media only screen and (max-width:580px) {
+            .chat-message__status {
+                font-size: 6px
+            }
+
+            .chat-message__status::before {
+                vertical-align: bottom;
+                width: 8px;
+                height: 8px;
+                background-size: 8px;
+                margin-right: 2px
+            }
+        }
+
+        @media only screen and (min-width:581px) {
+            .chat-message__status {
+                font-size: 10px
+            }
+
+            .chat-message__status::before {
+                vertical-align: top;
+                width: 12px;
+                height: 12px;
+                background-size: 12px;
+                margin-right: 4px
+            }
+        }
+
+        /* resume */
+        #resume-content {
+            padding: 1.3rem;
+            color: #001053;
+            font-size: 1.1rem;
+            line-height: 1.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="top-wrapper">
+
+        <div class="menu">
+
+        </div>
+
+        <!-- header -->
+        <div class="header__wrapper">
+            <div class="burger">
+                <a href="menu" id="menu" class="menu">
+
+                    <div class="burger__line"></div>
+                </a>
+
+            </div>
+            <h1 class="title">Профиль кандидата</h1>
+            <div class="buttons-wrapper">
+                <a href="done" id="done" class="done-button">
+                    <svg width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 1L6 12L1 7" stroke="#1A2864" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+
+
+                </a>
+                <div id="menu_additional">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M12 8C13.1 8 14 7.1 14 6C14 4.9 13.1 4 12 4C10.9 4 10 4.9 10 6C10 7.1 10.9 8 12 8ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10ZM12 16C10.9 16 10 16.9 10 18C10 19.1 10.9 20 12 20C13.1 20 14 19.1 14 18C14 16.9 13.1 16 12 16Z"
+                            fill="#1A2864" />
+                    </svg>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- user info -->
+        <div class="person-widget">
+            <div class="person-widget__wrapper">
+                <div class="person-widget__left-side">
+                    <div class="person-widget__avatar-wrapper">
+                        <!-- Аватарка -->
+                        <!-- src = ссылка или base64  -->
+                        <img class="person-widget__avatar" alt="avatar"
+                            src="data:image/png;base64,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" />
+                    </div>
+                </div>
+                <div class="person-widget__right-side">
+                    <div class="person-widget__person-info">
+                        <h2 class="person-widget__name">Лимаренко Александр
+                            Валерьевич <span class="subtitile__text">(05.11.1991)</span></h2>
+                        <h5 class="person-widget__subtitle">
+                            <p class="subtitile__text">Программист 1С</p>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <a href="#" class="nav__link active" id="main">Главное</a>
+            <a href="#" class="nav__link" id="lent">Лента</a>
+            <a href="#" class="nav__link" id="resume">Резюме</a>
+        </nav>
+
+    </div>
+
+    <!-- всплывающее правое меню -->
+    <div class="menu_additional-list" id="menu_additional-list">
+
+        <div class="group">
+            <a href="write" id="write">
+                <span>Записать</span>
+            </a>
+            <a href="recalc" id="recalc">
+                <span>Перечитать</span>
+            </a>
+            <a href="copy" id="copy">
+                <span>Скопировать</span>
+            </a>
+            <a href="mark-del" id="mark-del">
+                <span>Пометить на удаление</span>
+            </a>
+            <a href="delete" id="delete">
+                <span>Удалить</span>
+            </a>
+        </div>
+
+        <div class="group">
+            <a href="toCall" id="toCall">
+                <span>Позвонить</span>
+            </a>
+        </div>
+
+
+    </div>
+
+
+    <!-- вкладка Главное -->
+    <div class="table" id="main-content">
+
+        <div class="table__wrapper">
+
+            <!-- Шапка таблицы -->
+            <div class="table__head">
+                <!-- Ряд таблицы -->
+                <div class="table__row">
+                    <!-- Колонка таблицы и ее размер
+                (table__col_extra-mini table__col_mini table__col_medium table__col_large table__col_extra-large) -->
+
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_text-start table__col_medium table__col_text-start">
+                        <div class="table__group-title">работа по кадидату</div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Колонка таблицы и ее размер -->
+            <!-- выбранный ряд имеет класс active -->
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Вакансия
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>Программист 1С, и наставник</p>
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+            </div>
+
+            <!-- Колонка таблицы и ее размер -->
+            <!-- выбранный ряд имеет класс active -->
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Статус
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>Новый</p>
+                    <p class="color_gray fw_regular">от 05.11.2021</p>
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+            </div>
+
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Действие
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>Провести интервью</p>
+                </div>
+                <div class="table__col table__col_extra-mini">
+                    <button class="button">
+                        <svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.310934 9.31437L4.43546 5.49513L0.310934 1.67589C-0.103645 1.292 -0.103645 0.671866 0.310934 0.287974C0.725513 -0.0959187 1.39522 -0.0959187 1.8098 0.287974L6.68907 4.80609C7.10365 5.18999 7.10365 5.81012 6.68907 6.19401L1.8098 10.7121C1.39522 11.096 0.725513 11.096 0.310934 10.7121C-0.0930144 10.3282 -0.103645 9.69826 0.310934 9.31437Z"
+                                fill="#A6BCCC" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Шапка таблицы -->
+            <div class="table__head">
+                <!-- Ряд таблицы -->
+                <div class="table__row">
+                    <!-- Колонка таблицы и ее размер
+                (table__col_extra-mini table__col_mini table__col_medium table__col_large table__col_extra-large) -->
+
+                    <div class="table__col table__col_extra-mini padding"></div>
+                    <div class="table__col table__col_text-start table__col_medium table__col_text-start">
+                        <div class="table__group-title">контакты</div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Колонка таблицы и ее размер -->
+            <!-- выбранный ряд имеет класс active -->
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Мобильный
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>782382382832</p>
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+            </div>
+
+            <!-- Колонка таблицы и ее размер -->
+            <!-- выбранный ряд имеет класс active -->
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    E-mail
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>asdadsdas@gmail.com</p>
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+            </div>
+
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Вконтакте
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <a href="vk.com/id12314141" target="_blank">vk.com/id123141412</a>
+                </div>
+                <div class="table__col table__col_extra-mini">
+                    <button class="button">
+                        <svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.310934 9.31437L4.43546 5.49513L0.310934 1.67589C-0.103645 1.292 -0.103645 0.671866 0.310934 0.287974C0.725513 -0.0959187 1.39522 -0.0959187 1.8098 0.287974L6.68907 4.80609C7.10365 5.18999 7.10365 5.81012 6.68907 6.19401L1.8098 10.7121C1.39522 11.096 0.725513 11.096 0.310934 10.7121C-0.0930144 10.3282 -0.103645 9.69826 0.310934 9.31437Z"
+                                fill="#A6BCCC" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="table__row table__row_selectable">
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_text-start table__col_medium table__col_text-start color_gray">
+                    Адрес
+                </div>
+                <div class="table__col table__col_extra-mini padding"></div>
+                <div class="table__col table__col_large table__col_text-end">
+                    <p>ул.Куйбышева д.123, кв.231</p>
+                </div>
+                <div class="table__col table__col_extra-mini">
+                    <button class="button">
+                        <svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.310934 9.31437L4.43546 5.49513L0.310934 1.67589C-0.103645 1.292 -0.103645 0.671866 0.310934 0.287974C0.725513 -0.0959187 1.39522 -0.0959187 1.8098 0.287974L6.68907 4.80609C7.10365 5.18999 7.10365 5.81012 6.68907 6.19401L1.8098 10.7121C1.39522 11.096 0.725513 11.096 0.310934 10.7121C-0.0930144 10.3282 -0.103645 9.69826 0.310934 9.31437Z"
+                                fill="#A6BCCC" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- вкладка Лента -->
+    <div class="chat table hidden" id="lent-content">
+
+        <div class="chat__body">
+
+            <div class="chat__messages-list">
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Приглашение.pdf</a>
+                        </div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Резюме.pdf</a>
+                            <a href="#" class="chat-message__file">ИНН — Копия (2).JPEG</a>
+                        </div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Приглашение.pdf</a>
+                        </div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Резюме.pdf</a>
+                            <a href="#" class="chat-message__file">ИНН — Копия (2).JPEG</a>
+                        </div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Приглашение.pdf</a>
+                        </div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                        <div class="chat-message__attachments">
+                            <a href="#" class="chat-message__file">Резюме.pdf</a>
+                            <a href="#" class="chat-message__file">ИНН — Копия (2).JPEG</a>
+                        </div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_sent">
+                    <div class="chat-message__source">Буреломова Анна:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__subject">Вакансия: Программист 1С</div>
+                        <div class="chat-message__message">Результат по кандидату: Приглашен</div>
+                        <div class="chat-message__comment">Комментарий: какой-то текст про кандидата</div>
+                    </div>
+                    <div class="chat-message__status">Изменен 22.03.2021 в 14:56</div>
+                </div>
+
+                <div class="chat__message chat-message chat-message_received">
+                    <div class="chat-message__source">Через email:</div>
+                    <div class="chat-message__bubble">
+                        <div class="chat-message__message">Добрый день! Рад вашему приглашению на вакансию программиста
+                            1с</div>
+                    </div>
+                    <div class="chat-message__status">Доставлено 22.03.2021 в 14:56</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat__footer">
+            <div class="buttons-wrapper">
+                <!-- класс active - выбранная кнопка -->
+                <div class="button active">Viber</div>
+                <div class="button">WhatsUp</div>
+                <div class="button">E-mail</div>
+                <div class="button">Telegram</div>
+            </div>
+            <div class="send-message">
+                <textarea name="message_text" placeholder="Текст собщения" id="message_text" rows="1"></textarea>
+                <a href="#" id="send-message" class="done-button">
+                    <svg width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 1L6 12L1 7" stroke="#1A2864" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- вкладка резюме -->
+    <div class="table" id="resume-content">
+        <p class="text">
+            Требуемый опыт работы: 1–3 года
+            <!-- пустая стока + перенос стоки -->
+            <br>&nbsp;
+            <br>
+            Полная занятость, полный день
+            <!-- пустая стока + перенос стоки -->
+            <br>&nbsp;
+            <br>
+            Обязанности:
+            <br>&nbsp;
+            <br>
+            Администрирование 1-С 7,8;
+            Бесперебойная работа сетевого, кассового и весового оборудования;
+            Поддержание в актуальном рабочем состоянии полного объема оперативной и накапливаемой информации, а также
+            защита
+            информации от несанкционированного доступа.
+            Требования:
+            <br>&nbsp;
+            <br>
+            Высшее профильное образование (информационные технологии)
+            Знание 1-С7,8
+            <br>&nbsp;
+            <br>
+            Навыки обслуживания принтеров, опыт мелкого ремонта ПК.
+            <br>&nbsp;
+            <br>
+            Условия:
+            <br>&nbsp;
+            <br>
+            Оформление на работу в соответствии с ТК РФ, полный соц.пакет;
+            График работы сменный;
+            <br>&nbsp;
+            <br>
+            Своевременная выплата заработной платы 2 раза в месяц;
+            <br>&nbsp;
+            <br>
+            Квартальные премии;
+            <br>&nbsp;
+            <br>
+            Подарки детям к Новому году
+            <br>&nbsp;
+            <br>
+            Подарочный сертификат номиналом 1 тыс.руб. ко Дню Рождения
+            <br>&nbsp;
+            <br>
+            Работа в стабильной и развивающейся компании.
+        </p>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const contentWrappers = document.querySelectorAll('.table');
+            const topWrapperHeight = document.querySelector('#top-wrapper').clientHeight
+            contentWrappers.forEach(wrapper => wrapper.style.height = `calc(100vh - ${topWrapperHeight}px )`)
+
+            // menu toggle
+            const menu_additional_list = document.querySelector('#menu_additional-list')
+
+            document.querySelector('#menu_additional').onclick = () => {
+                menu_additional_list.classList.toggle('active')
+            }
+
+            // navigation
+            const scrollChatToBottom = () => {
+                const chatWrapper = document.querySelector('.table.chat')
+                chatWrapper.scrollTo(0, chatWrapper.scrollHeight)
+            }
+
+            const navLinks = document.querySelectorAll('.nav__link');
+            const linkClickHandler = (e) => {
+                navLinks.forEach(el => el.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                contentWrappers.forEach(table => table.classList.add('hidden'))
+                const contentEl = document.querySelector(`#${e.currentTarget.id}-content`)
+                contentEl && contentEl.classList.remove('hidden')
+                e.currentTarget.id === 'lent' && scrollChatToBottom()
+            }
+            navLinks.forEach(link => link.addEventListener('click', linkClickHandler))
+
+        });
+    </script>
+
+</body>
+
+</html>
